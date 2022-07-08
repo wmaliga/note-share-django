@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: note-share-django
+spec:
+  selector:
+    matchLabels:
+      app: note-share-django
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: note-share-django
+    spec:
+      containers:
+        - name: note-share-django
+          image: 889055510083.dkr.ecr.eu-north-1.amazonaws.com/note-share-django:latest
+          imagePullPolicy: Always
+          ports:
+            - name: django-port
+              containerPort: 8000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: note-share-django-service
+  labels:
+    app: note-share-django-service
+spec:
+  ports:
+    - port: 80
+      targetPort: django-port
+      protocol: TCP
+  selector:
+    app: note-share-django
+  type: LoadBalancer
